@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Menu, X, ChevronDown, Mail, Phone, Linkedin, Github, MapPin, Award, Code, Briefcase, Calendar, Send } from 'lucide-react'
-
+import { Menu, X, ChevronDown, Mail, Phone, Linkedin, Github, ChevronLeft, ChevronRight, MapPin, Award, Code, Briefcase, Calendar, Send, Play, ExternalLink, Plus } from 'lucide-react'
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   // Controla si el menú móvil está abierto o cerrado
@@ -16,6 +15,10 @@ export default function Home() {
     message: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  // Estados para el carrusel de imágenes
+  const [currentImageIndex, setCurrentImageIndex] = useState({})
+  const [imageErrors, setImageErrors] = useState({})
   
 
   // Función para navegar suavemente a una sección
@@ -58,12 +61,51 @@ export default function Home() {
     setIsSubmitting(false)
   }
 
+  // Funciones para el carrusel de imágenes
+  const nextImage = (proyectoId) => {
+    const proyecto = proyectos.find(p => p.id === proyectoId)
+    if (proyecto && proyecto.imagenes) {
+      const currentIndex = currentImageIndex[proyectoId] || 0
+      const nextIndex = (currentIndex + 1) % proyecto.imagenes.length
+      setCurrentImageIndex(prev => ({
+        ...prev,
+        [proyectoId]: nextIndex
+      }))
+    }
+  }
+
+  const prevImage = (proyectoId) => {
+    const proyecto = proyectos.find(p => p.id === proyectoId)
+    if (proyecto && proyecto.imagenes) {
+      const currentIndex = currentImageIndex[proyectoId] || 0
+      const prevIndex = currentIndex === 0 ? proyecto.imagenes.length - 1 : currentIndex - 1
+      setCurrentImageIndex(prev => ({
+        ...prev,
+        [proyectoId]: prevIndex
+      }))
+    }
+  }
+
+  const getCurrentImage = (proyecto) => {
+    if (!proyecto.imagenes) return proyecto.imagen
+    const index = currentImageIndex[proyecto.id] || 0
+    return proyecto.imagenes[index]
+  }
+
+  const handleImageError = (proyectoId) => {
+    setImageErrors(prev => ({
+      ...prev,
+      [proyectoId]: true
+    }))
+  }
+
   // Items de navegación
   const navItems = [
     { id: 'inicio', label: 'Inicio' },
     { id: 'perfil', label: 'Perfil' },
     { id: 'habilidades', label: 'Habilidades' },
     { id: 'experiencia', label: 'Experiencia' },
+    { id: 'proyectos', label: 'Proyectos' },
     { id: 'contacto', label: 'Contacto' }
   ]
 
@@ -136,6 +178,84 @@ export default function Home() {
         'Modelado funcional con UML/BPMN'
       ],
       tecnologias: ['SAP MM', 'SAP WM', 'SAP SD', 'SAP Fiori', 'UML', 'BPMN']
+    }
+  ]
+
+  // Datos de proyectos destacados
+  const proyectos = [
+    {
+      id: 1,
+      titulo: 'Sistema Integral de Gestión de Construcción',
+      descripcion: 'Plataforma full-stack desarrollada con Django y Angular que revoluciona la administración de proyectos de construcción. Sistema completo que automatiza procesos críticos y proporciona visibilidad total del ciclo de vida de proyectos constructivos.',
+      video: '/video-construccion.mp4', // Coloca tu video optimizado aquí
+      imagen: '/proyecto-construccion.jpg', // Imagen de preview (opcional)
+      tecnologias: ['Python (Django)', 'Angular', 'PostgreSQL', 'TypeScript'],
+      caracteristicas: [
+        'Monitoreo de Obra en tiempo real',
+        'Gestión Presupuestaria avanzada',
+        'Órdenes de Compra automatizadas',
+        'Control de Inventarios y Materiales',
+        'Planificación de Tareas y Cronogramas',
+        'Gestión Horaria de Colaboradores',
+        'Reportes y Balances Anuales',
+        'Asistente Virtual con IA'
+      ],
+      rol: 'Desarrollador Fullstack',
+      duracion: 'Proyecto Final - UTN',
+      destacado: true
+    },
+    {
+      id: 2,
+      titulo: 'Plataforma Integral para Ligas de Voley',
+      descripcion: 'Sistema web revolucionario diseñado para profesionalizar y visibilizar ligas menores de voley. Facilita la gestión completa de torneos, desde la organización de partidos hasta el seguimiento detallado de estadísticas de jugadores, impulsando el desarrollo del deporte en la región.',
+      video: null,
+      imagen: '/ligas-voley.jpg',
+      tecnologias: ['Python (Django)', 'Angular', 'PostgreSQL', 'TypeScript'],
+      caracteristicas: [
+        'Gestión multi-rol de usuarios (Técnicos, Asistentes, Jugadores)',
+        'Administración completa de ligas y temporadas',
+        'Carga de resultados y actualización automática de posiciones',
+        'Formaciones tácticas y cambios en tiempo real',
+        'Estadísticas detalladas por jugador (remates, defensas, bloqueos)',
+        'Perfiles personalizados con análisis de rendimiento',
+        'Gestión de equipos y plantillas',
+        'Historial completo de partidos y estadísticas'
+      ],
+      rol: 'Desarrollador Fullstack',
+      duracion: 'Proyecto Independiente',
+      destacado: false,
+      imagenes: [
+        '/ligas-voley.jpg',
+        '/ligas-voley-1.jpg',
+        '/ligas-voley-2.jpg',
+        '/ligas-voley-3.jpg',
+        '/ligas-voley-4.jpg',
+        '/ligas-voley-5.jpg',
+        '/ligas-voley-6.jpg',
+        '/ligas-voley-7.jpg',
+        '/ligas-voley-8.jpg',
+        '/ligas-voley-9.jpg'
+      ]
+    },
+    {
+      id: 3,
+      titulo: 'Próximo Proyecto',
+      descripcion: 'Espacio reservado para futuros desarrollos. Aquí se mostrarán nuevas aplicaciones y soluciones tecnológicas que esté creando.',
+      video: null,
+      imagen: '/prox-proyecto.jpg',
+      tecnologias: ['En desarrollo...'],      
+      video: null,
+      imagen: '/prox-proyecto.jpg',
+      tecnologias: ['En desarrollo...'],
+      caracteristicas: [
+        'Próximamente...',
+        'Nuevas tecnologías',
+        'Innovaciones en desarrollo'
+      ],
+      rol: 'En desarrollo',
+      duracion: '2025',
+      destacado: false,
+      placeholder: true
     }
   ]
 
@@ -538,6 +658,201 @@ export default function Home() {
                       <div className="text-sm text-gray-600">Especialización Principal</div>
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Projects Section - Sección de Proyectos Destacados */}
+      <section id="proyectos" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">
+              Proyectos Destacados
+            </h2>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              {proyectos.map((proyecto) => (
+                <Card key={proyecto.id} className={`overflow-hidden hover:shadow-xl transition-all duration-300 ${
+                  proyecto.destacado ? 'ring-2 ring-blue-200' : ''
+                } ${proyecto.placeholder ? 'border-dashed border-gray-300' : ''}`}>
+                  <CardContent className="p-0">
+                    {/* Video o Imagen Preview */}
+                    <div className="relative aspect-video bg-gray-100">
+                      {proyecto.video ? (
+                        <div className="relative w-full h-full">
+                          <video
+                            className="w-full h-full object-cover"
+                            poster={proyecto.imagen}
+                            controls
+                            preload="metadata"
+                          >
+                            <source src={proyecto.video} type="video/mp4" />
+                            Tu navegador no soporta el video.
+                          </video>
+                          {proyecto.destacado && (
+                            <Badge className="absolute top-4 left-4 bg-blue-600 text-white">
+                              Destacado
+                            </Badge>
+                          )}
+                        </div>
+                        ) : proyecto.imagenes ? (
+                        // Carrusel de imágenes interactivo
+                        <div className="relative w-full h-full group">
+                          <img
+                            src={getCurrentImage(proyecto)}
+                            alt={`${proyecto.titulo} - Imagen ${(currentImageIndex[proyecto.id] || 0) + 1}`}
+                            className="w-full h-full object-cover transition-opacity duration-300"
+                            onError={() => handleImageError(proyecto.id)}
+                          />
+                          
+                          {/* Controles del carrusel */}
+                          <button
+                            onClick={() => prevImage(proyecto.id)}
+                            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-black/70"
+                            aria-label="Imagen anterior"
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </button>
+                          
+                          <button
+                            onClick={() => nextImage(proyecto.id)}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-black/70"
+                            aria-label="Siguiente imagen"
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </button>
+                          
+                          {/* Indicadores de imágenes */}
+                          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                            {proyecto.imagenes.map((_, index) => (
+                              <button
+                                key={index}
+                                onClick={() => setCurrentImageIndex(prev => ({
+                                  ...prev,
+                                  [proyecto.id]: index
+                                }))}
+                                className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                                  index === (currentImageIndex[proyecto.id] || 0)
+                                    ? 'bg-white'
+                                    : 'bg-white/50'
+                                }`}
+                                aria-label={`Ir a imagen ${index + 1}`}
+                              />
+                            ))}
+                          </div>
+                          
+                          {/* Badge de cantidad de imágenes */}
+                          <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                            {(currentImageIndex[proyecto.id] || 0) + 1} / {proyecto.imagenes.length}
+                          </div>
+                          
+                          {proyecto.destacado && (
+                            <Badge className="absolute top-4 left-4 bg-blue-600 text-white">
+                              Destacado
+                            </Badge>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                          {proyecto.placeholder ? (
+                            <div className="text-center space-y-4">
+                              <Plus className="h-12 w-12 text-gray-400 mx-auto" />
+                              <p className="text-gray-500 font-medium">Próximamente</p>
+                              <p className="text-sm text-gray-400">Nuevo proyecto en desarrollo</p>
+                            </div>
+                          ) : (
+                            <div className="text-center space-y-4">
+                              <Play className="h-12 w-12 text-gray-400 mx-auto" />
+                              <p className="text-gray-500">Video no disponible</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Información del Proyecto */}
+                    <div className="p-6 space-y-4">
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                          {proyecto.titulo}
+                        </h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          {proyecto.descripcion}
+                        </p>
+                      </div>
+                      
+                      {/* Características */}
+                      <div>
+                        <h4 className="font-medium text-gray-900 mb-3">Características principales:</h4>
+                        <div className="grid grid-cols-2 gap-2">
+                          {proyecto.caracteristicas.map((caracteristica, index) => (
+                            <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                              <div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
+                              {caracteristica}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      {/* Tecnologías */}
+                      <div>
+                        <h4 className="font-medium text-gray-900 mb-3">Tecnologías utilizadas:</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {proyecto.tecnologias.map((tech, index) => (
+                            <Badge 
+                              key={index} 
+                              variant="secondary" 
+                              className="text-xs"
+                            >
+                              {tech}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      {/* Información Adicional */}
+                      <div className="flex items-center justify-between pt-4 border-t">
+                        <div>
+                          <p className="text-sm text-gray-500">
+                            <span className="font-medium">Rol:</span> {proyecto.rol}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            <span className="font-medium">Duración:</span> {proyecto.duracion}
+                          </p>
+                        </div>
+                        
+                        {proyecto.video && (
+                          <Button variant="outline" size="sm" className="gap-2">
+                            <ExternalLink className="h-4 w-4" />
+                            Ver Demo
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            {/* Call to Action para nuevos proyectos */}
+            <div className="mt-16 text-center">
+              <Card className="p-8 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+                <CardContent className="space-y-4">
+                  <h3 className="text-xl font-semibold text-gray-900">¿Tienes un proyecto en mente?</h3>
+                  <p className="text-gray-700 max-w-2xl mx-auto">
+                    Estoy siempre abierto a nuevos desafíos y proyectos interesantes. 
+                    Si necesitas un desarrollador fullstack o consultor SAP para tu próximo proyecto, 
+                    ¡hablemos!
+                  </p>
+                  <Button 
+                    onClick={() => scrollToSection('contacto')} 
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  >
+                    Discutir tu Proyecto
+                  </Button>
                 </CardContent>
               </Card>
             </div>
